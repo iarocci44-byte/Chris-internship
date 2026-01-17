@@ -18,6 +18,10 @@ const ItemDetails = () => {
       setLoading(true);
       const item = location.state?.item;
 
+      // Extract author/creator name from various possible API field names
+      const authorName = item?.authorName || item?.author || item?.creator || item?.creatorName || item?.authorID || "Author name unavailable";
+      const authorImage = item?.authorImage || AuthorImage;
+
       const transformedData = item
         ? {
             title: item.title || "Title unavailable",
@@ -26,12 +30,12 @@ const ItemDetails = () => {
             likes: item.likes || Math.floor(Math.random() * 200),
             price: item.price || (Math.random() * 5 + 0.5).toFixed(2),
             owner: {
-              name: item.authorName || "Author name unavailable",
-              image: item.authorImage || AuthorImage
+              name: authorName,
+              image: authorImage
             },
             creator: {
-              name: item.authorName || "Author name unavailable",
-              image: item.authorImage || AuthorImage
+              name: authorName,
+              image: authorImage
             },
             nftImage: item.nftImage || nftImage
           }

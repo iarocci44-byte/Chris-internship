@@ -7,6 +7,55 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+const CountdownTimer = ({ expiryDate }) => {
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const targetDate = new Date(expiryDate).getTime();
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference <= 0) {
+        setTimeLeft("Ended");
+        return;
+      }
+
+      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((difference / 1000 / 60) % 60);
+      const seconds = Math.floor((difference / 1000) % 60);
+
+      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, [expiryDate]);
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: "5px",
+        right: "10px",
+        background: "#ffffff",
+        color: "#000",
+        padding: "4px 12px",
+        borderRadius: "50px",
+        fontSize: "12px",
+        fontWeight: "600",
+        zIndex: 5,
+        whiteSpace: "nowrap",
+        border: "1px solid #000"
+      }}
+    >
+      {timeLeft}
+    </div>
+  );
+};
+
 const NewItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -86,10 +135,11 @@ const NewItems = () => {
                 <Slider ref={sliderRef} {...sliderSettings}>
                   {items.map((item, index) => (
                     <div key={index}>
-                      <div className="nft_coll">
-                        <div className="nft_wrap">
-                          <Link to="/item-details" state={{ item }}>
-                            <img src={item.nftImage || nftImage} className="lazy img-fluid" alt="" />
+                      <div className="nft_coll" style={{ position: "relative", paddingTop: "30px" }}>
+                        {item.expiryDate && <CountdownTimer expiryDate={item.expiryDate} />}
+                        <div className="nft_wrap" style={{ padding: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Link to="/item-details" state={{ item }} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <img src={item.nftImage || nftImage} className="lazy img-fluid" alt="" style={{ maxWidth: "85%", maxHeight: "170px", height: "auto" }} />
                           </Link>
                         </div>
                         <div className="nft_coll_pp">
@@ -103,6 +153,15 @@ const NewItems = () => {
                             <h4>{item.title || "Pinky Ocean"}</h4>
                           </Link>
                           <span>{item.code || "ERC-192"}</span>
+                          <div style={{ marginTop: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <div style={{ fontSize: "14px", fontWeight: "600", paddingLeft: "10px" }}>
+                              {item.price || "3.08"} ETH
+                            </div>
+                            <div style={{ fontSize: "14px", color: "#ddd", paddingRight: "10px" }}>
+                              <i className="fa fa-heart"></i>
+                              <span style={{ marginLeft: "5px" }}>{item.likes || 69}</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

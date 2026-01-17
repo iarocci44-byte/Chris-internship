@@ -99,10 +99,10 @@ const HotCollections = () => {
                 <Slider ref={sliderRef} {...sliderSettings}>
                   {collections.map((collection, index) => (
                     <div key={index}>
-                      <div className="nft_coll">
-                        <div className="nft_wrap">
-                          <Link to="/item-details" state={{ item: collection }}>
-                            <img src={collection.nftImage || nftImage} className="lazy img-fluid" alt="" />
+                      <div className="nft_coll" style={{ position: "relative", paddingTop: "30px" }}>
+                        <div className="nft_wrap" style={{ padding: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Link to="/item-details" state={{ item: collection }} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <img src={collection.nftImage || nftImage} className="lazy img-fluid" alt="" style={{ maxWidth: "85%", maxHeight: "170px", height: "auto" }} />
                           </Link>
                         </div>
                         <div className="nft_coll_pp">
