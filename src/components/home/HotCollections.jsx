@@ -6,6 +6,9 @@ import "slick-carousel/slick/slick-theme.css";
 import AuthorImage from "../../images/author_thumbnail.jpg";
 import nftImage from "../../images/nftImage.jpg";
 import axios from "axios";
+import { sliderSettings } from "../common/sliderConfig";
+import SliderButton from "../common/SliderButton";
+import SliderImageWrapper from "../common/SliderImageWrapper";
 
 const HotCollections = () => {
   const [collections, setCollections] = useState([]);
@@ -28,38 +31,6 @@ const HotCollections = () => {
 
     fetchCollections();
   }, []);
-
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    arrows: false,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        }
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        }
-      }
-    ]
-  };
 
   return (
     <section id="section-collections" className="no-bottom section-collections">
@@ -100,11 +71,12 @@ const HotCollections = () => {
                   {collections.map((collection, index) => (
                     <div key={index}>
                       <div className="nft_coll" style={{ position: "relative", paddingTop: "30px" }}>
-                        <div className="nft_wrap" style={{ padding: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Link to="/item-details" state={{ item: collection }} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <img src={collection.nftImage || nftImage} className="lazy img-fluid" alt="" style={{ maxWidth: "85%", maxHeight: "170px", height: "auto" }} />
-                          </Link>
-                        </div>
+                        <SliderImageWrapper 
+                          item={collection}
+                          imageUrl={collection.nftImage || nftImage}
+                          linkTo="/item-details"
+                          state={{ item: collection }}
+                        />
                         <div className="nft_coll_pp">
                           <Link to="/author">
                             <img className="lazy pp-coll" src={collection.authorImage || AuthorImage} alt="" />
@@ -121,52 +93,8 @@ const HotCollections = () => {
                     </div>
                   ))}
                 </Slider>
-                <button
-                  onClick={() => sliderRef.current.slickPrev()}
-                  style={{
-                    position: 'absolute',
-                    left: '-10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: '#fff',
-                    border: '2px solid #333',
-                    borderRadius: '50%',
-                    width: '50px',
-                    height: '50px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '24px',
-                    cursor: 'pointer',
-                    zIndex: 10,
-                    color: '#333'
-                  }}
-                >
-                  <i className="fa fa-chevron-left"></i>
-                </button>
-                <button
-                  onClick={() => sliderRef.current.slickNext()}
-                  style={{
-                    position: 'absolute',
-                    right: '-10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: '#fff',
-                    border: '2px solid #333',
-                    borderRadius: '50%',
-                    width: '50px',
-                    height: '50px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '24px',
-                    cursor: 'pointer',
-                    zIndex: 10,
-                    color: '#333'
-                  }}
-                >
-                  <i className="fa fa-chevron-right"></i>
-                </button>
+                <SliderButton direction="prev" onClick={() => sliderRef.current.slickPrev()} />
+                <SliderButton direction="next" onClick={() => sliderRef.current.slickNext()} />
               </div>
             </div>
           </div>
