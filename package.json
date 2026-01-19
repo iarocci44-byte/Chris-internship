@@ -18,7 +18,7 @@
     "react-slick": "^0.31.0",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4",
-    "@remix-run/dev": "^2.17.4"
+    "@remix-run/dev": "^1.17.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -43,8 +43,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@remix-run/dev": "^2.17.4"
   }
 }
