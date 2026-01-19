@@ -58,7 +58,7 @@ const NFTCard = ({ item, variant = "grid" }) => {
           </div>
         )}
         <div className="nft_wrap" style={{ padding: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Link to="/item-details" state={{ item }} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Link to={item.nftId ? `/item-details/${item.nftId}` : "/item-details"} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <img src={item.nftImage || nftImage} className="lazy img-fluid" alt="" style={{ maxWidth: "85%", maxHeight: "170px", height: "auto" }} />
           </Link>
         </div>
@@ -69,7 +69,7 @@ const NFTCard = ({ item, variant = "grid" }) => {
           <i className="fa fa-check"></i>
         </div>
         <div className="nft_coll_info">
-          <Link to="/item-details" state={{ item }}>
+          <Link to={item.nftId ? `/item-details/${item.nftId}` : "/item-details"}>
             <h4>{item.title || "Pinky Ocean"}</h4>
           </Link>
           <span>{item.code || "ERC-192"}</span>
@@ -124,12 +124,12 @@ const NFTCard = ({ item, variant = "grid" }) => {
               </div>
             </div>
           </div>
-          <Link to="/item-details">
+          <Link to={item.nftId ? `/item-details/${item.nftId}` : "/item-details"}>
             <img src={item.nftImage || nftImage} className="lazy nft__item_preview" alt="" />
           </Link>
         </div>
         <div className="nft__item_info">
-          <Link to="/item-details">
+          <Link to={item.nftId ? `/item-details/${item.nftId}` : "/item-details"}>
             <h4>{item.title || "Untitled"}</h4>
           </Link>
           <div className="nft__item_price">{item.price || "0"} ETH</div>

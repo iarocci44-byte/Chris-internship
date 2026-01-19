@@ -74,7 +74,7 @@ const HotCollections = () => {
                         <SliderImageWrapper 
                           item={collection}
                           imageUrl={collection.nftImage || nftImage}
-                          linkTo="/item-details"
+                          linkTo={collection.nftId ? `/item-details/${collection.nftId}` : "/item-details"}
                           state={{ item: collection }}
                         />
                         <div className="nft_coll_pp">
