@@ -141,13 +141,13 @@ const ItemDetails = () => {
                       <h6>Owner</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to="/author">
+                          <Link to={itemData?.owner?.id ? `/author/${itemData.owner.id}` : "/author"}>
                             <img className="lazy" src={itemData?.owner.image} alt="" />
                             <i className="fa fa-check"></i>
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to="/author">{itemData?.owner.name}</Link>
+                          <Link to={itemData?.owner?.id ? `/author/${itemData.owner.id}` : "/author"}>{itemData?.owner.name}</Link>
                         </div>
                       </div>
                     </div>
@@ -158,13 +158,13 @@ const ItemDetails = () => {
                       <h6>Creator</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to="/author">
+                          <Link to={itemData?.creator?.id ? `/author/${itemData.creator.id}` : "/author"}>
                             <img className="lazy" src={itemData?.creator.image} alt="" />
                             <i className="fa fa-check"></i>
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to="/author">{itemData?.creator.name}</Link>
+                          <Link to={itemData?.creator?.id ? `/author/${itemData.creator.id}` : "/author"}>{itemData?.creator.name}</Link>
                         </div>
                       </div>
                     </div>

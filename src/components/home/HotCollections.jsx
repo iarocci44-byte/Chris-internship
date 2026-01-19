@@ -78,7 +78,7 @@ const HotCollections = () => {
                           state={{ item: collection }}
                         />
                         <div className="nft_coll_pp">
-                          <Link to="/author">
+                          <Link to={collection.authorId ? `/author/${collection.authorId}` : "/author"}>
                             <img className="lazy pp-coll" src={collection.authorImage || AuthorImage} alt="" />
                           </Link>
                           <i className="fa fa-check"></i>

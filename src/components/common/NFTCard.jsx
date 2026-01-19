@@ -63,7 +63,7 @@ const NFTCard = ({ item, variant = "grid" }) => {
           </Link>
         </div>
         <div className="nft_coll_pp">
-          <Link to="/author">
+          <Link to={item.authorId ? `/author/${item.authorId}` : "/author"}>
             <img className="lazy pp-coll" src={item.authorImage || AuthorImage} alt="" />
           </Link>
           <i className="fa fa-check"></i>
@@ -96,7 +96,7 @@ const NFTCard = ({ item, variant = "grid" }) => {
       <div className="nft__item">
         <div className="author_list_pp">
           <Link
-            to="/author"
+            to={item.authorId ? `/author/${item.authorId}` : "/author"}
             data-bs-toggle="tooltip"
             data-bs-placement="top"
           >
