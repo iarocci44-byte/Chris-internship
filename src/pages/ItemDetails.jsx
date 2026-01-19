@@ -1,71 +1,58 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import EthImage from "../images/ethereum.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
 import nftImage from "../images/nftImage.jpg";
 
 
 const ItemDetails = () => {
+  const { nftId } = useParams();
   const [itemData, setItemData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const location = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Derive data from navigation state; avoid redundant API calls
-    try {
-      setLoading(true);
-      const item = location.state?.item;
+    
+    const fetchItemDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftId=${nftId}`
+        );
+        const data = response.data;
+        
+        // Transform API response to expected structure
+        const transformedData = data ? {
+          ...data,
+          owner: {
+            name: data.ownerName,
+            id: data.ownerId,
+            image: data.ownerImage || AuthorImage
+          },
+          creator: {
+            name: data.creatorName,
+            id: data.creatorId,
+            image: data.creatorImage || AuthorImage
+          },
+          nftImage: data.nftImage || nftImage
+        } : null;
+        
+        setItemData(transformedData);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching item details:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      // Extract author/creator name from various possible API field names
-      const authorName = item?.authorName || item?.author || item?.creator || item?.creatorName || item?.authorID || "Author name unavailable";
-      const authorImage = item?.authorImage || AuthorImage;
-
-      const transformedData = item
-        ? {
-            title: item.title || "Title unavailable",
-            description: "Description unavailable",
-            views: Math.floor(Math.random() * 500),
-            likes: item.likes || Math.floor(Math.random() * 200),
-            price: item.price || (Math.random() * 5 + 0.5).toFixed(2),
-            owner: {
-              name: authorName,
-              image: authorImage
-            },
-            creator: {
-              name: authorName,
-              image: authorImage
-            },
-            nftImage: item.nftImage || nftImage
-          }
-        : {
-            // Fallback placeholder when navigated directly without state
-            title: "Pinky Ocean",
-            description: "Description unavailable",
-            views: Math.floor(Math.random() * 500),
-            likes: Math.floor(Math.random() * 200),
-            price: (Math.random() * 5 + 0.5).toFixed(2),
-            owner: {
-              name: "Author name unavailable",
-              image: AuthorImage
-            },
-            creator: {
-              name: "Author name unavailable",
-              image: AuthorImage
-            },
-            nftImage: nftImage
-          };
-
-      setItemData(transformedData);
-      setError(null);
-    } catch (err) {
-      console.error("Error preparing item details:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    if (nftId) {
+      fetchItemDetails();
     }
-  }, [location.state]);
+  }, [nftId]);
 
   if (loading) {
     return (
@@ -75,8 +62,37 @@ const ItemDetails = () => {
           <section aria-label="section" className="mt90 sm-mt-0">
             <div className="container">
               <div className="row">
-                <div className="col-12 text-center">
-                  <h3>Loading...</h3>
+                <div className="col-md-6 text-center">
+                  <div className="skeleton skeleton-img" style={{ width: "100%", height: "500px", borderRadius: "8px" }}></div>
+                </div>
+                <div className="col-md-6">
+                  <div className="item_info">
+                    <div className="skeleton skeleton-title" style={{ width: "60%", height: "40px", marginBottom: "20px" }}></div>
+                    
+                    <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
+                      <div className="skeleton skeleton-text" style={{ width: "80px", height: "20px" }}></div>
+                      <div className="skeleton skeleton-text" style={{ width: "80px", height: "20px" }}></div>
+                    </div>
+                    
+                    <div className="skeleton skeleton-text" style={{ width: "100%", height: "15px", marginBottom: "10px" }}></div>
+                    <div className="skeleton skeleton-text" style={{ width: "100%", height: "15px", marginBottom: "10px" }}></div>
+                    <div className="skeleton skeleton-text" style={{ width: "80%", height: "15px", marginBottom: "30px" }}></div>
+                    
+                    <div className="skeleton skeleton-text" style={{ width: "60px", height: "20px", marginBottom: "10px" }}></div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "30px" }}>
+                      <div className="skeleton skeleton-avatar" style={{ width: "50px", height: "50px", borderRadius: "50%" }}></div>
+                      <div className="skeleton skeleton-text" style={{ width: "100px", height: "20px" }}></div>
+                    </div>
+                    
+                    <div className="skeleton skeleton-text" style={{ width: "60px", height: "20px", marginBottom: "10px" }}></div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "30px" }}>
+                      <div className="skeleton skeleton-avatar" style={{ width: "50px", height: "50px", borderRadius: "50%" }}></div>
+                      <div className="skeleton skeleton-text" style={{ width: "100px", height: "20px" }}></div>
+                    </div>
+                    
+                    <div className="skeleton skeleton-text" style={{ width: "60px", height: "20px", marginBottom: "10px" }}></div>
+                    <div className="skeleton skeleton-text" style={{ width: "120px", height: "30px" }}></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -121,7 +137,10 @@ const ItemDetails = () => {
               </div>
               <div className="col-md-6">
                 <div className="item_info">
-                  <h2>{itemData?.title}</h2>
+                  <h2>
+                    {itemData?.title}
+                    {itemData?.tag && <span style={{ marginLeft: "10px" }}>#{itemData.tag}</span>}
+                  </h2>
 
                   <div className="item_info_counts">
                     <div className="item_info_views">

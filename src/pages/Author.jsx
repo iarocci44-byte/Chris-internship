@@ -3,7 +3,6 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import AuthorBanner from "../images/author_banner.jpg";
 import AuthorItems from "../components/author/AuthorItems";
-import { Link } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
 
 const Author = () => {
@@ -82,27 +81,46 @@ const Author = () => {
                 <div className="d_profile de-flex">
                   <div className="de-flex-col">
                     <div className="profile_avatar">
-                      <img src={authorData?.authorImage || AuthorImage} alt="" />
-
-                      <i className="fa fa-check"></i>
-                      <div className="profile_name">
-                        <h4>
-                          {authorData?.authorName || "Loading..."}
-                          <span className="profile_username">@{authorData?.tag || "username"}</span>
-                          <span id="wallet" className="profile_wallet">
-                            {authorData?.address || "UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7"}
-                          </span>
-                          <button id="btn_copy" title="Copy Text">
-                            Copy
-                          </button>
-                        </h4>
-                      </div>
+                      {loading ? (
+                        <>
+                          <div className="skeleton skeleton-avatar" style={{ width: "150px", height: "150px", borderRadius: "50%" }}></div>
+                          <div style={{ marginTop: "20px" }}>
+                            <div className="skeleton skeleton-title" style={{ width: "200px", height: "30px", marginBottom: "10px" }}></div>
+                            <div className="skeleton skeleton-text" style={{ width: "150px", height: "20px", marginBottom: "10px" }}></div>
+                            <div className="skeleton skeleton-text" style={{ width: "100%", height: "15px", marginBottom: "10px" }}></div>
+                            <div className="skeleton skeleton-text" style={{ width: "80%", height: "15px" }}></div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <img src={authorData?.authorImage || AuthorImage} alt="" />
+                          <i className="fa fa-check"></i>
+                          <div className="profile_name">
+                            <h4>
+                              {authorData?.authorName || "Loading..."}
+                              <span className="profile_username">@{authorData?.tag || "username"}</span>
+                              <span id="wallet" className="profile_wallet">
+                                {authorData?.address || "UDHUHWudhwd78wdt7edb32uidbwyuidhg7wUHIFUHWewiqdj87dy7"}
+                              </span>
+                              <button id="btn_copy" title="Copy Text">
+                                Copy
+                              </button>
+                            </h4>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">{followerCount} followers</div>
-                      <button type="button" className="btn-main" onClick={handleFollowToggle}>
+                      <div className="profile_follower">
+                        {loading ? (
+                          <div className="skeleton skeleton-text" style={{ width: "100px", height: "20px" }}></div>
+                        ) : (
+                          `${followerCount} followers`
+                        )}
+                      </div>
+                      <button type="button" className="btn-main" onClick={handleFollowToggle} disabled={loading}>
                         {isFollowing ? "Unfollow" : "Follow"}
                       </button>
                     </div>
