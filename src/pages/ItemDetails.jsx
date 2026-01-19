@@ -1,58 +1,71 @@
 import React, { useEffect, useState } from "react";
 import EthImage from "../images/ethereum.svg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
 import nftImage from "../images/nftImage.jpg";
-import axios from 'axios';
 
 
 const ItemDetails = () => {
   const [itemData, setItemData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    
-    // Fetch data from API
-    const fetchItemData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get('https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections');
-        console.log(response.data);
-        
-        // Get first item from API response
-        const item = response.data[0];
-        
-        // Transform API data to match your component structure
-        const transformedData = {
-          title: item.title || "Rainbow Style #194",
-          description: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
-          views: Math.floor(Math.random() * 500),
-          likes: item.likes || Math.floor(Math.random() * 200),
-          price: item.price || (Math.random() * 5 + 0.5).toFixed(2),
-          owner: {
-            name: item.authorName || "Monica Lucas",
-            image: item.authorImage || AuthorImage
-          },
-          creator: {
-            name: item.authorName || "Monica Lucas",
-            image: item.authorImage || AuthorImage
-          },
-          nftImage: item.nftImage || nftImage
-        };
-        
-        setItemData(transformedData);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+    // Derive data from navigation state; avoid redundant API calls
+    try {
+      setLoading(true);
+      const item = location.state?.item;
 
-    fetchItemData();
-  }, []);
+      // Extract author/creator name from various possible API field names
+      const authorName = item?.authorName || item?.author || item?.creator || item?.creatorName || item?.authorID || "Author name unavailable";
+      const authorImage = item?.authorImage || AuthorImage;
+
+      const transformedData = item
+        ? {
+            title: item.title || "Title unavailable",
+            description: "Description unavailable",
+            views: Math.floor(Math.random() * 500),
+            likes: item.likes || Math.floor(Math.random() * 200),
+            price: item.price || (Math.random() * 5 + 0.5).toFixed(2),
+            owner: {
+              name: authorName,
+              image: authorImage
+            },
+            creator: {
+              name: authorName,
+              image: authorImage
+            },
+            nftImage: item.nftImage || nftImage
+          }
+        : {
+            // Fallback placeholder when navigated directly without state
+            title: "Pinky Ocean",
+            description: "Description unavailable",
+            views: Math.floor(Math.random() * 500),
+            likes: Math.floor(Math.random() * 200),
+            price: (Math.random() * 5 + 0.5).toFixed(2),
+            owner: {
+              name: "Author name unavailable",
+              image: AuthorImage
+            },
+            creator: {
+              name: "Author name unavailable",
+              image: AuthorImage
+            },
+            nftImage: nftImage
+          };
+
+      setItemData(transformedData);
+      setError(null);
+    } catch (err) {
+      console.error("Error preparing item details:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [location.state]);
 
   if (loading) {
     return (
